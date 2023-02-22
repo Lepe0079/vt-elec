@@ -2,8 +2,8 @@ import {
   screen,
   BrowserWindow,
   BrowserWindowConstructorOptions,
-  webContents,
   ipcMain,
+  dialog,
 } from 'electron';
 import Store from 'electron-store';
 const {download} = require('electron-dl');
@@ -95,6 +95,13 @@ export default (windowName: string, options: BrowserWindowConstructorOptions): B
   ipcMain.on("download", (event, info) => {
     download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
     .then(dl => win.webContents.send("download complete", dl.getSavePath()))
+  })
+  ipcMain.on("folder-request", (event) => {
+    dialog.showOpenDialog({properties: ['openDirectory']})
+    .then((folder) => {
+      event.reply('folder', folder.filePaths[0])
+    })
+    .catch((err) => console.error(err))
   })
 
   return win;

@@ -5,7 +5,7 @@ import { testAlbum } from "../../../main/helpers/testVars";
 import { ITrack } from "../../components/types";
 import TrackTable from "../../components/tracktable";
 import Card from "../../components/card";
-import { ipcRenderer } from "electron";
+import { ipcRenderer, dialog } from "electron";
 
 export default function Album({ params }: { params: { title: string } }) {
   const fetched = useRef<boolean>(false);
@@ -51,15 +51,24 @@ export default function Album({ params }: { params: { title: string } }) {
   useEffect(() => {
     // if(!fetched.current)
     //     fetchAlbum(params.title)
+    ipcRenderer.on('folder', (event, path) => {
+      console.log(event, path)
+    })
+  
   }, []);
+
+  const selectDownloadLocation = () => {
+    ipcRenderer.send("folder-request")
+  }
 
   const handleClick = (e:any) => {
     e.preventDefault()
-    console.log(e.target.id)
-    ipcRenderer.send("download", {
-      url: `${testAlbum.tracks[e.target.id].links.download}`,
-      properties: {directory: ""}
-    })
+    selectDownloadLocation()
+    // console.log(e.target.id)
+    // ipcRenderer.send("download", {
+    //   url: `${testAlbum.tracks[e.target.id].links.download}`,
+    //   properties: {directory: ""}
+    // })
 
   }
 

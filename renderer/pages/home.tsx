@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Card from "../components/card";
+import { ipcRenderer, IpcRenderer } from "electron";
 
 export default function HomePage() {
   const [search, setSearch] = useState<string>('')
@@ -10,8 +11,7 @@ export default function HomePage() {
   
   }, [search])
 
-  const handleChange = (e:any) => {
-
+  const handleChange = (e:any) => {  
     setSearch(e.target.value)
   }
 
