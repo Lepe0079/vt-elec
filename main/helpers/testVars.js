@@ -1,4 +1,5 @@
 export const testAlbum = {
+   "name": "grandia-2-complete-soundtrack",
     "albumArt":[
        "https://vgmsite.com/soundtracks/grandia-2-povo/00-povo-cover.jpg"
     ],

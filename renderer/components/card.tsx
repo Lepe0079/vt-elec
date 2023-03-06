@@ -12,4 +12,4 @@ export default function Card(props:CardProps) {
       </div>
     </div>
   );
-} 
+}

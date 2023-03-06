@@ -4,95 +4,99 @@ import Card from "../components/card";
 import { ipcRenderer, IpcRenderer } from "electron";
 
 export default function HomePage() {
-  const [search, setSearch] = useState<string>('')
-  const [albums, setAlbums] = useState<any>([])
-  
-  useEffect(() => {
-  
-  }, [search])
+	const [search, setSearch] = useState<string>("");
+	const [albums, setAlbums] = useState<any>([]);
 
-  const handleChange = (e:any) => {  
-    setSearch(e.target.value)
-  }
+	useEffect(() => {}, [search]);
 
-  const handleSubmit = (e:any) => {
-    e.preventDefault()
-    fetch(`api/search/${search}`)
-      .then((res) => res.json())
-      .then((res) => setAlbums(res))
-      .catch((err) => console.error(err));
-  }
+	const handleChange = (e: any) => {
+		setSearch(e.target.value);
+	};
 
-  const handleSelect = (e:any) => {
-    console.log(e.target.attributes.id.value)
-  }
+	const handleSubmit = (e: any) => {
+		e.preventDefault();
+		fetch(`api/search/${search}`)
+			.then((res) => res.json())
+			.then((res) => setAlbums(res))
+			.catch((err) => console.error(err));
+	};
 
-  return (
-    <div>
-      <Card>
-        <form onSubmit={handleSubmit}>
-          <input
-            id="albumSearch"
-            type="text"
-            value={search}
-            onChange={handleChange}
-            placeholder="Album/Track"
-            className="text-black border-2 border-cyan-800 p-2 px-8 rounded-2xl text-xl"
-          />
-          <button
-            id="search"
-            type="submit"
-            className="border-2 p-2 rounded-2xl bg-sky-800 border-slate-500 hover:text-black hover:bg-slate-500 hover:border-transparent"
-          >
-            Search
-          </button>
-          <button
-            id="clear"
-            type="button"
-            onClick={() => setSearch('')}
-            
-            className="border-2 p-2 rounded-2xl bg-sky-800 border-slate-500 hover:text-black hover:bg-slate-500 hover:border-transparent"
-          >
-            Clear
-          </button>
-          <Link href='/album/a'>
-            <a className='btn-blue'>test</a>
-         </Link>
-        </form>
-      </Card>
-      {albums && (
-        <div className="grid gap-4 grid-cols-3">
-          {albums.map((album: any) => {  
-            return (
-              <div className="card flex grow justify-start max-w-4xl content-end space-x-4" key={album.vtName}>
-                <img src={album.thumbnail} width="128" height="128" />
-                <div className="md:container"> 
-                    <div className="place-self-start">
-                      <h1>{album.title}</h1>
-                      <h3>{album.year}</h3>
-                      <h6>{album.platforms.join(", ")}</h6>
-                    </div>
-                    <div className="pt-5">
-                      <button 
-                        id={album.vtName} 
-                        type="button" 
-                        onClick={handleSelect}  
-                        className="px-4 py-1 text-sm font-semibold rounded-full border bg-sky-800 border-slate-500 hover:text-black hover:bg-slate-500 hover:border-transparent"
-                        >
-                          Browse
-                      </button>
-                    </div>
-                </div>
-              </div>
-            )      
-          })}
-        </div>
-      )}
-    </div>
-      
-  );
+	const handleSelect = (e: any) => {
+		console.log(e.target.attributes.id.value);
+		fetch(`api/album/${e.target.attributes.id.value}`)
+			.then((res) => res.json())
+			.then((res) => console.log("album match", res))
+			.catch((err) => console.error(err));
+	};
+
+	return (
+		<div>
+			<Card>
+				<form className="grid gap-y-3" onSubmit={handleSubmit}>
+					<input
+						id="albumSearch"
+						type="text"
+						value={search}
+						onChange={handleChange}
+						placeholder="Album/Track"
+						className="text-black border-1 border-cyan-800 py-1 px-6 rounded-xl text-xl"
+					/>
+					<div className="flex gap-4 flex-row">
+						<button
+							id="search"
+							type="submit"
+							className="btn-default min-w-1/2 grow"
+						>
+							Search
+						</button>
+						<button
+							id="clear"
+							type="button"
+							onClick={() => setSearch("")}
+							className="btn-default min-w-1/2 grow"
+						>
+							Clear
+						</button>
+					</div>
+					<Link href="/album/a">
+						<a className="btn-default">test</a>
+					</Link>
+				</form>
+			</Card>
+			{albums && (
+				<div className="grid gap-4 grid-cols-3">
+					{albums.map((album: any) => {
+						return (
+							<div
+								className="card flex grow justify-start max-w-4xl content-end space-x-4"
+								key={album.vtName}
+							>
+								<img src={album.thumbnail} width="128" height="128" />
+								<div className="md:container">
+									<div className="place-self-start">
+										<h1>{album.title}</h1>
+										<h3>{album.year}</h3>
+										<h6>{album.platforms.join(", ")}</h6>
+									</div>
+									<div className="pt-5">
+										<button
+											id={album.vtName}
+											type="button"
+											onClick={handleSelect}
+											className="btn-default font-semibold border"
+										>
+											Browse
+										</button>
+									</div>
+								</div>
+							</div>
+						);
+					})}
+				</div>
+			)}
+		</div>
+	);
 }
-
 
 // import React from 'react';
 // import Head from 'next/head';

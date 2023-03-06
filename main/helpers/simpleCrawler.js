@@ -98,11 +98,12 @@ const getAlbumData = (album) => {
                         console.error(e)
                     }
                 })
-                let album = {
+                let fullAlbum = {
+                    name: album,
                     albumArt: imgs,
                     tracks: tracks
                 }
-                resolve(album)
+                resolve(fullAlbum)
                 done();
             }
         })
