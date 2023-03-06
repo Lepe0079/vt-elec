@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Card from "../components/card";
-import { ipcRenderer, IpcRenderer } from "electron";
 
 export default function HomePage() {
 	const [search, setSearch] = useState<string>("");
@@ -18,14 +17,6 @@ export default function HomePage() {
 		fetch(`api/search/${search}`)
 			.then((res) => res.json())
 			.then((res) => setAlbums(res))
-			.catch((err) => console.error(err));
-	};
-
-	const handleSelect = (e: any) => {
-		console.log(e.target.attributes.id.value);
-		fetch(`api/album/${e.target.attributes.id.value}`)
-			.then((res) => res.json())
-			.then((res) => console.log("album match", res))
 			.catch((err) => console.error(err));
 	};
 
@@ -58,9 +49,6 @@ export default function HomePage() {
 							Clear
 						</button>
 					</div>
-					<Link href="/album/a">
-						<a className="btn-default">test</a>
-					</Link>
 				</form>
 			</Card>
 			{albums && (
@@ -79,14 +67,9 @@ export default function HomePage() {
 										<h6>{album.platforms.join(", ")}</h6>
 									</div>
 									<div className="pt-5">
-										<button
-											id={album.vtName}
-											type="button"
-											onClick={handleSelect}
-											className="btn-default font-semibold border"
-										>
-											Browse
-										</button>
+										<Link href={`/album/${album.vtName}`}>
+											<a className="btn-default">Browse</a>
+										</Link>
 									</div>
 								</div>
 							</div>

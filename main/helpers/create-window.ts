@@ -81,25 +81,26 @@ export default (windowName: string, options: BrowserWindowConstructorOptions): B
     },
   };
   win = new BrowserWindow(browserOptions);
-  // win.webContents.session.on('will-download', (event, item, webContents) => {
-  //   item.setSavePath('/tmp')
-  //   item.on('updated', (event, state) => {
-
-  //   })
-  //   item.once('done', (event, state) => {
-  //     if (state === 'completed') {
-  //       console.log('Download successfully')
-  //     }
-  //   })
-  // })
   win.on('close', saveState);
-  ipcMain.on("download", (event, info) => {
-    download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
+
+  ipcMain.on("download-single", (event, info) => {
+    download(BrowserWindow.getAllWindows()[0], info.url, info.properties)
     .then((dl) => {
       win.webContents.send("download complete", dl.getSavePath())
-      
     })
   })
+
+  ipcMain.on("download-files", async (event, request) => {
+    for (const track of request.tracks) {
+      await download(BrowserWindow.getAllWindows()[0], track, {
+        directory: request.path,
+      }).catch((err) => {
+        console.log(request.path, track)
+        console.error(err)
+      })
+    }
+  });
+
   ipcMain.on("folder-request", (event) => {
     dialog.showOpenDialog({properties: ['openDirectory']})
     .then((folder) => {
@@ -108,6 +109,7 @@ export default (windowName: string, options: BrowserWindowConstructorOptions): B
     })
     .catch((err) => console.error(err))
   })
+  
   ipcMain.handle("get-folder", async (event) => {
     return app.getPath("downloads")
   })
